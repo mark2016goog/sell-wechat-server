@@ -1,0 +1,24 @@
+{
+  "name": "sell-wechat-server",
+  "version": "1.0.0",
+  "description": "小迪外卖的后端程序",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "外卖",
+    "koa2",
+    "nodejs"
+  ],
+  "author": "wangdi",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "mongodb": "^2.2.25",
+    "mongoose": "^4.9.3"
+  },
+  "devDependencies": {
+    "bluebird": "^3.5.0"
+  }
+}
