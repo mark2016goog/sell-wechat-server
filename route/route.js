@@ -20,12 +20,12 @@ router.post('/user/signinpassword',User.signinPassword);
 router.post('/user/signup',User.signup);
 
 // 查询菜单路由
-router.get('/menu/:restaurant_id',Menu.findById,function(ctx){
+router.get('/menu/',Menu.findById,function(ctx){
   ctx.body = ctx.menu;
 });
 
 //查询评价路由
-router.get('/rating/',Rating.findById,function(){
+router.get('/rating/',Rating.findById,function(ctx){
   ctx.body = ctx.rating;
 });
 

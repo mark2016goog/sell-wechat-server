@@ -21,7 +21,7 @@ const RatingModel = require('../models/rating');
 // }
 exports.findById = function(ctx,next){
  return RatingModel.findOne({restaurant_id:ctx.query.restaurant_id}).then(function(rating){
-      ctx.rating = JSON.stringify(rating);
+      ctx.rating = JSON.stringify(rating.content);
       return next();
   });
 }
