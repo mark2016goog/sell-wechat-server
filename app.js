@@ -12,7 +12,8 @@ mongoose.connect(DB_URL);
 
 app
   .use(bodyParser())
-  .use(router.routes());
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 app.listen(3000);
 console.log('server listening 3000 port...');
