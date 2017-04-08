@@ -12,7 +12,7 @@ exports.findById = async function (ctx, next) {
     ctx.body = menu;
   } else {
     ctx.body = {
-      error: -1,
+      success: -1,
       message: '数据出错'
     };
   }

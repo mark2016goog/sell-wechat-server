@@ -2,6 +2,8 @@ const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
 const promise = require('bluebird');
+const session = require('koa-session2');
+const Store = require('./Store');
 
 const DB_URL = 'mongodb://localhost/xiaodiwaimai';
 const app = new Koa();
@@ -12,8 +14,12 @@ mongoose.connect(DB_URL);
 
 app
   .use(bodyParser())
+  .use(session({
+    key:'sessionid',
+    store:new Store()
+  }))
   .use(router.routes())
-  .use(router.allowedMethods());
+  .use(router.allowedMethods())
 
 app.listen(3000);
 console.log('server listening 3000 port...');

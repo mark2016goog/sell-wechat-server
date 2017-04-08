@@ -7,25 +7,31 @@ const randomString = require('random-string');
  * @param {any} req 
  * @param {any} res 
  */
-exports.signinPassword = function (ctx) {
+exports.signinPassword = async(ctx) => {
   var _user = ctx.request.body;
-  UserModel.findOne({
+  let user = await UserModel.find({
     username: _user.username
-  }, function (err, user) {
-    if (err) {
-      console.log(err);
-    }
-    if (!user) {
-      console.log('用户不存在');
+  }).exec();
+  if (user) {
+    if (user.password == _user.password) {
+      ctx.session.user = user;
+      ctx.body = {
+        success: 0,
+        data: {
+          name: user.name,
+        }
+      }
     } else {
-      if (user.password == _user.password) {
-        console.log('登录成功');
-      } else {
-        console.log('登录失败');
+      ctx.body = {
+        success: -1,
+        data: {
+          message: '登录失败'
+        }
       }
     }
-  });
+  }
 }
+
 /**
  * 电话号码登录
  * 
@@ -55,30 +61,34 @@ exports.signinPassword = function (ctx) {
  * 
  * @param {any} ctx 
  */
-exports.signup = function (ctx) {
+exports.signup = async function (ctx) {
   var _user = {
-    username:ctx.request.body.username,
-    password:ctx.request.body.password,
-    name:randomString(8)+randomString(8)
+    username: ctx.request.body.username,
+    password: ctx.request.body.password,
+    name: randomString(8) + randomString(8)
   };
-  UserModel.findOne({
+  let user = await UserModel.find({
     username: ctx.request.body.username
-  }, function (err, user) {
-    if (err) {
-      console.log(err);
+  }).exec();
+  if (!user.length) {
+    user = new UserModel(_user);
+    user.save(function (err) {
+      if (err) {
+        ctx.send({
+          success: -1,
+          message: '注册失败'
+        });
+      } else {
+        ctx.send({
+          success: 0,
+          message: '注册成功'
+        });
+      }
+    }); 
+  } else {
+    ctx.body = {
+      success: -2,
+      message: '用户已存在，请重新注册或直接登录'
     }
-    if (!user) {
-      user = new UserModel(_user);
-      user.save(function (err, user) {   
-        if (err) {
-          console.log(err);
-        } else {
-          console.log('注册成功');
-        }
-      });
-    } else {
-      console.log('用户名已存在，请登录，或更改用户名继续注册');
-    }
-  });
+  }
 }
-

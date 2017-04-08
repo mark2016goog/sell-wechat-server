@@ -2,18 +2,19 @@ const mongoose = require('mongoose');
 const RatingModel = require('../models/rating');
 
 exports.findById = async function (ctx, next) {
-  const rating = await RatingModel.findOne({
+  let limit = ctx.query.limit;
+  let offset = ctx.query.offset;
+  const rating = await RatingModel.find({
     restaurant_id: ctx.query.restaurant_id
-  }).exec().catch(function (err) {
+  }).limit(limit).skip(offset).exec().catch(function (err) {
     console.log(err);
   });
   if (rating) {
     ctx.body = rating;
   } else {
     ctx.body = {
-      error: -1,
+      success: -1,
       message: '数据出错'
     };
   }
-  await next();
 }

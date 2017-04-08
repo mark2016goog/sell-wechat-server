@@ -10,7 +10,7 @@ const router = new Router();
 // user路由
 router.get('/', async(ctx, next) => {
   ctx.response.body = `<h1>Index</h1>
-        <form action="/user/signup" method="post">
+        <form action="/user/signin" method="post">
             <p>Name: <input name="username" value="koa"></p>
             <p>Password: <input name="password" type="password"></p>
             <p><input type="submit" value="Submit"></p>
@@ -18,7 +18,24 @@ router.get('/', async(ctx, next) => {
 });
 
 router.post('/user/signinpassword', User.signinPassword);
+router.get('/user/signinpassword', async(ctx) => {
+  ctx.response.body = `<h1>Index</h1>
+        <form action="/user/signinpassword" method="post">
+            <p>Name: <input name="username" value="koa"></p>
+            <p>Password: <input name="password" type="password"></p>
+            <p><input type="submit" value="Submit"></p>
+        </form>`;
+});
+// 注册
 router.post('/user/signup', User.signup);
+router.get('/user/signup', async(ctx, next) => {
+  ctx.response.body = `<h1>Index</h1>
+        <form action="/user/signup" method="post">
+            <p>Name: <input name="username" value="koa"></p>
+            <p>Password: <input name="password" type="password"></p>
+            <p><input type="submit" value="Submit"></p>
+        </form>`;
+});
 
 // 查询菜单路由
 router.get('/menu/', Menu.findById);
@@ -27,7 +44,7 @@ router.get('/menu/', Menu.findById);
 router.get('/rating/', Rating.findById);
 
 //查询餐馆信息
-router.get('/restaurant/',Restaurant.findByLocation);
+router.get('/restaurant/', Restaurant.findByLocation);
 
 // 天气接口
 router.get('/weather/', async function (ctx, next) {
@@ -48,5 +65,15 @@ router.get('/weather/', async function (ctx, next) {
   ctx.body = data;
 });
 
-
+// search查询接口
+router.get('/search/', async function (ctx, next) {
+  let keyword = ctx.query.keyword;
+  let result = await superagent.get('https://mainsite-restapi.ele.me/bgs/poi/search_poi_nearby?keyword=' + keyword + '&offset=0&limit=20').then(function (res) {
+    return res.body;
+  });
+  ctx.body = {
+    success: 0,
+    data: result
+  };
+});
 module.exports = router;
