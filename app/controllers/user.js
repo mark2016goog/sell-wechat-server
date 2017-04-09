@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const UserModel = require('../models/user');
 const randomString = require('random-string');
 /**
@@ -25,7 +26,7 @@ exports.signinPassword = async(ctx) => {
       ctx.body = {
         success: -1,
         data: {
-          message: '登录失败'
+          message: '密码错误'
         }
       }
     }
@@ -71,20 +72,20 @@ exports.signup = async function (ctx) {
     username: ctx.request.body.username
   }).exec();
   if (!user.length) {
-    user = new UserModel(_user);
-    user.save(function (err) {
-      if (err) {
-        ctx.send({
-          success: -1,
-          message: '注册失败'
-        });
-      } else {
-        ctx.send({
-          success: 0,
-          message: '注册成功'
-        });
+    try {
+      let res = await UserModel.create(_user);
+      ctx.session = res;
+      ctx.body = {
+        success:0,
+        message:'注册成功！'
       }
-    }); 
+    }catch(e){
+      ctx.body ={
+        success:-1,
+        message:'注册失败'
+      }
+    }
+
   } else {
     ctx.body = {
       success: -2,
