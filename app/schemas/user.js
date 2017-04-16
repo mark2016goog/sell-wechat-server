@@ -1,13 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 let UserSchema = new Schema({
   username: {
     unique: true,
     type: String
   },
+  address:[{type: ObjectId, ref: 'Address'}],
   password: String,
   name: String,
+  phonenumber:String,
   meta: {
     createAt: {
       type: Date,

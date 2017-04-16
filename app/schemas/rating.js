@@ -5,7 +5,7 @@ let RatingSchema = new Schema({
   restaurant_id:{
     type:String
   },
-  content:[],
+  content:{},
   meta:{
     createAt:{
       type:Date,

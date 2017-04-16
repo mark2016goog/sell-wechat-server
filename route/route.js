@@ -42,6 +42,7 @@ router.get('/menu/', Menu.findById);
 
 //查询评价路由
 router.get('/rating/', Rating.findById);
+router.get('/ratingcount/',Rating.ratingCount);
 
 //查询餐馆信息
 router.get('/restaurant/', Restaurant.findByLocation);
