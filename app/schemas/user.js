@@ -3,14 +3,17 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
 let UserSchema = new Schema({
-  username: {
-    unique: true,
-    type: String
+  password: {
+    type:String,
+    default:''
   },
-  address:[{type: ObjectId, ref: 'Address'}],
-  password: String,
   name: String,
-  phonenumber:String,
+  phonenumber:{
+    type:String,
+    unique:true
+  },
+  address_ids:[],
+  order_ids:[],
   meta: {
     createAt: {
       type: Date,
@@ -31,17 +34,6 @@ UserSchema.pre('save', function (next) {
   } else {
     this.meta.updateAt = Date.now()
   }
-
-  // bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-  //   if (err) return next(err);
-
-  //   bcrypt.hash(user.password, salt, function (err, hash) {
-  //     if (err) return next(err);
-
-  //     user.password = hash;
-  //     next();
-  //   });
-  // });
   next();
 });
 

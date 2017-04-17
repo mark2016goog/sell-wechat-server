@@ -3,9 +3,8 @@ const Schame = mongoose.Schema;
 const ObjectId = Schame.Types.ObjectId;
 
 let OrderSchame = new Schame({
-  user:{
+  user_id:{
     type:ObjectId,
-    ref:'User'
   },
   shop_name:String,
   status:Number,

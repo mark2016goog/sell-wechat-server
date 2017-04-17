@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-
+const bcrypt = require('bcrypt-nodejs');
 const UserModel = require('../models/user');
 const randomString = require('random-string');
+
 /**
  * 密码登录处理
  * 
@@ -9,87 +10,99 @@ const randomString = require('random-string');
  * @param {any} res 
  */
 exports.signinPassword = async(ctx) => {
-  var _user = ctx.request.body;
+  let _user = ctx.request.body;
   let user = await UserModel.find({
-    username: _user.username
+    phonenumber: _user.phonenumber
   }).exec();
+
   if (user) {
-    if (user.password == _user.password) {
-      ctx.session.user = user;
+    if (user.password == '') {
       ctx.body = {
-        success: 0,
-        data: {
-          name: user.name,
-        }
+        success: -2,
+        message: '请先设置密码在登录'
       }
     } else {
-      ctx.body = {
-        success: -1,
-        data: {
-          message: '密码错误'
+      if (bcrypt.compareSync(_user.password, user[0].password)) {
+        ctx.session.user = user[0];
+        ctx.body = {
+          success: 0,
+          message: '登录成功',
+          data: {
+            name: user[0].name,
+            phonenumber: user[0].phonenumber,
+          }
+        }
+      } else {
+        ctx.body = {
+          success: -1,
+          data: {
+            message: '密码错误'
+          }
         }
       }
+    }
+  } else {
+    ctx.body = {
+      success: -1,
+      message: '请先用手机注册'
     }
   }
 }
 
 /**
- * 电话号码登录
+ * 电话号码登录如果没注册自动注册
  * 
  * @param {any} ctx 
  */
-// exports.signinPhone = function (ctx) {
-//   var _user = ctx.request.body;
-//   UserModel.findOne({
-//     username: _user.phone_number
-//   }, function (err, user) {
-//     if (err) {
-//       console.log(err);
-//     }
-//     if (!user) {
-//       console.log('用户不存在');
-//     } else {
-//       if (user.password == _user.password) {
-//         console.log('登录成功');
-//       } else {
-//         console.log('登录失败');
-//       }
-//     }
-//   });
-// }
-/**
- * 注册用户
- * 
- * @param {any} ctx 
- */
-exports.signup = async function (ctx) {
-  var _user = {
-    username: ctx.request.body.username,
-    password: ctx.request.body.password,
-    name: randomString(8) + randomString(8)
-  };
+exports.signinPhone = async function (ctx) {
+  let _user = ctx.request.body;
+  _user.name = randomString(8) + randomString(8);
   let user = await UserModel.find({
-    username: ctx.request.body.username
+    phonenumber: _user.phonenumber
   }).exec();
   if (!user.length) {
     try {
       let res = await UserModel.create(_user);
       ctx.session = res;
       ctx.body = {
-        success:0,
-        message:'注册成功！'
+        success: 0,
+        message: '注册成功！'
       }
-    }catch(e){
-      ctx.body ={
-        success:-1,
-        message:'注册失败'
+    } catch (e) {
+      ctx.body = {
+        success: -1,
+        message: '注册失败'
       }
     }
+  } else {
+    ctx.session = user[0];
+    ctx.body = {
+      success: 0,
+      message: '登录成功',
+      data: {
+        name: user[0].name,
+        phonenumber: user[0].phonenumber,
+      }
+    }
+  }
+}
 
+exports.setPassword = async(ctx) => {
+  let hash = bcrypt.hashSync(ctx.request.body.password);
+  let user = await UserModel.update({
+    phonenumber: ctx.request.body.phonenumber
+  }, {
+    password: hash
+  }).exec();
+  if (user.ok == 1) {
+    ctx.body = {
+      success: 0,
+      message: '密码设置成功'
+    }
   } else {
     ctx.body = {
-      success: -2,
-      message: '用户已存在，请重新注册或直接登录'
+      success: -1,
+      message: '密码设置失败'
     }
   }
 }

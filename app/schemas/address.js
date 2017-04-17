@@ -6,8 +6,8 @@
  */
 
 const mongoose = require('mongoose');
-const Schame = mongoose.Schema;
-const ObjectId = Schame.Types.ObjectId;
+const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 
 let AddressSchema = new Schema({
   name: String,
@@ -17,10 +17,6 @@ let AddressSchema = new Schema({
   detail_address: String,
   door_number: String,
   label: String,
-  user: {
-    type: ObjectId,
-    ref: 'User'
-  },
   meta: {
     createAt: {
       type: Date,
