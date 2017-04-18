@@ -18,76 +18,124 @@ router.get('/', async(ctx, next) => {
         </form>`;
 });
 
+/**
+ * 数据格式
+ * phonenumber:''电话号码
+ * password:''//密码
+ * 
+ */
+//密码登录
 router.post('/user/signinpassword', User.signinPassword);
-router.get('/user/signinpassword', async(ctx) => {
-  ctx.response.body = `<h1>Index</h1>
-        <form action="/user/signinpassword" method="post">
-            <p>电话号码: <input name="phonenumber"></p>
-            <p>Password: <input name="password" type="password"></p>
-            <p><input type="submit" value="Submit"></p>
-        </form>`;
-});
+
 // 注册
-router.post('/user/signinphone', User.signinPhone);
-router.get('/user/signup', async(ctx, next) => {
-  ctx.response.body = `<h1>Index</h1>
-        <form action="/user/signinphone" method="post">
-            <p>手机号: <input name="phonenumber"></p>
-            <p>验证码: <input name="code" type="text"></p>
-            <p><input type="submit" value="Submit"></p>
-        </form>`;
-});
+/**
+ * 数据格式
+ * phonenumber:''电话号码
+ * code:''//密码
+ * 
+ */
+//手机号登录如果没有注册自动注册
+router.post('/user/signinphonenumber', User.signinPhoneNumber);
+
 
 // 设置密码
+/**
+ * 数据格式
+ * {
+ *  phonenumber:''//手机号
+ *  password:''//密码
+ * }
+ */
 router.post('/user/setpassword', User.setPassword);
-router.get('/user/setpassword', async(ctx) => {
-  ctx.response.body = `
-      <form action="/user/setpassword" method="post">
-            <p>手机号: <input name="phonenumber"></p>
-            <p>验证码: <input name="password" type="password"></p>
-            <p><input type="submit" value="Submit"></p>
-        </form>
-  `
-});
 
+
+
+//数据格式
+/*
+{
+  _id:'',//地址id新增不传，修改传
+  user_id:''//地址对应的user_id   user 与address 为一对多关系
+  name:''//姓名
+  sex:''//性别
+  phonenumber:''电话号码
+  address:'' //地址
+  detail_address:''//详细地址
+  door_number:''//门牌号
+  label:''//标签
+}
+
+*/
 // 设置送货地址
-router.get('/user/setaddress',async (ctx)=>{
-   ctx.response.body = `
-      <form action="/user/setaddress" method="post">
-            <input name="_id" hidden value="58f4a96554f74d2f445b04e5">
-            <input name="user_id" hidden value="58f46a0ca9ab5025c87caeff">            
-            <p>姓名: <input name="name"></p>
-            <p>性别: <input name="sex"></p>
-            <p>电话号码: <input name="phonenumber"></p>
-            <p>地址: <input name="address"></p>
-            <p>详细地址: <input name="detail_address"></p>
-            <p>门牌号: <input name="door_number"></p>
-            <p>标签: <input name="label"></p>            
-            <p><input type="submit" value="Submit"></p>
-      </form>
-  `
-});
 router.post('/user/setaddress',Address.setAddress);
+//获取收货地址
+/**
+ * 数据格式
+ * {
+ *  phonenumber:''//用户手机号
+ * }
+ * 
+ */
+router.get('/user/getaddress',Address.find);
+//数据格式
+/**
+ * {
+ *  _id:''//address id
+ * }
+ */
+//删除收货地址
 router.post('/user/deleteaddress',Address.delete);
-router.get('/user/deleteaddress',async (ctx)=>{
-   ctx.response.body = `
-      <form action="/user/deleteaddress" method="post">
-            <input name="_id" hidden value="58f4a96554f74d2f445b04e5">
-            <p><input type="submit" value="Submit"></p>
-      </form>
-  `
-});
+
+
+/**
+ * 数据格式
+ * {
+ *  restaurant_id:''
+ * }
+ */
 // 查询菜单路由
 router.get('/menu/', Menu.findById);
 
+/**
+ * 数据格式
+ * {
+ *  restaurant_id:'',//餐馆id
+ *  limit:''//一次请求几个数据
+ *  offset:''//分页参数
+ * }
+ */
 //查询评价路由
 router.get('/rating/', Rating.findById);
+
+/**
+ * 数据格式
+ * {
+ *  restaurant_id:'',//餐馆id
+ * }
+ */
 router.get('/ratingcount/', Rating.ratingCount);
 
+
+/**
+ * 数据格式
+ * {
+ *  latitude:'' //纬度，
+ *  longitude:''//经度
+ *  limit:''//一次请求几个数据
+ *  offset:''//分页参数
+ * }
+ */
 //查询餐馆信息
 router.get('/restaurant/', Restaurant.findByLocation);
 
 // 天气接口
+
+/**
+ * 数据格式
+ * {
+ *  latitude:'' //纬度，
+ *  longitude:''//经度
+ * }
+ */
 router.get('/weather/', async function (ctx, next) {
   const data = await superagent.get('http://mainsite-restapi.ele.me/bgs/weather/current?latitude=' + ctx.query.latitude + '&longitude=' + ctx.query.longitude).then(function (res) {
     var path = res.body.image_hash;

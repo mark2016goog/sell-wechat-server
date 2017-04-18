@@ -1,28 +1,22 @@
 const mongoose = require('mongoose');
 const AddressModel = require('../models/address');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 const UserModel = require('../models/user');
 
 exports.find = async (ctx,next)=>{
-  const address = await AddressModel.find({user_id:ctx.query.user_id}).exec();
-  if(address.length){
+  const result = await UserModel.findOne({phonenumber:ctx.query.phonenumber},{address_ids:1});
+  console.log(result);
+  if(result){
+    const address = await AddressModel.find({_id:{$in:result.address_ids}});
     ctx.body = {
       success:0,
       message:'获取收货地址成功',
-      data:address,
-    }
-  }
-  else{
-    ctx.body = {
-      success:-1,
-      message:'还没有设置收货地址,请设置！'
+      data:address
     }
   }
   await next();
 }
 exports.setAddress = async (ctx,next)=>{
   let _address = ctx.request.body;
-  console.log(_address._id);
   if(_address._id){
     let address = await AddressModel.update({_id:_address._id},{
       name:_address.name,
@@ -64,6 +58,7 @@ exports.setAddress = async (ctx,next)=>{
         }
       }
     }catch(e){
+      console.log(e);
       ctx.body ={
         success:-1,
         message:'收货地址添加失败'

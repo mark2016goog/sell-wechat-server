@@ -12,8 +12,14 @@ let UserSchema = new Schema({
     type:String,
     unique:true
   },
-  address_ids:[],
-  order_ids:[],
+  address_ids:{
+    type:Array,
+    default:[]
+  },
+  order_ids:{
+    type:Array,
+    default:[]
+  },
   meta: {
     createAt: {
       type: Date,
@@ -28,7 +34,6 @@ let UserSchema = new Schema({
 
 
 UserSchema.pre('save', function (next) {
-  var user = this;
   if (this.isNew) {
     this.meta.createAt = this.meta.updateAt = Date.now()
   } else {
@@ -36,5 +41,6 @@ UserSchema.pre('save', function (next) {
   }
   next();
 });
+
 
 module.exports = UserSchema;

@@ -54,7 +54,7 @@ exports.signinPassword = async(ctx) => {
  * 
  * @param {any} ctx 
  */
-exports.signinPhone = async function (ctx) {
+exports.signinPhoneNumber = async function (ctx) {
   let _user = ctx.request.body;
   _user.name = randomString(8) + randomString(8);
   let user = await UserModel.find({
@@ -69,6 +69,7 @@ exports.signinPhone = async function (ctx) {
         message: '注册成功！'
       }
     } catch (e) {
+      console.log(e);
       ctx.body = {
         success: -1,
         message: '注册失败'

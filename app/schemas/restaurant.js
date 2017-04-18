@@ -38,7 +38,6 @@ RestaurantSchema.pre('save', function (next) {
   } else {
     this.meta.updateAt = Date.now();
   }
-
   next();
 });
 
