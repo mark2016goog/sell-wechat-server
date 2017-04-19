@@ -9,13 +9,19 @@ const superagent = require('superagent');
 const router = new Router();
 
 // user路由
-router.get('/', async(ctx, next) => {
-  ctx.response.body = `<h1>Index</h1>
-        <form action="/user/signin" method="post">
-            <p>Name: <input name="username" value="koa"></p>
-            <p>Password: <input name="password" type="password"></p>
-            <p><input type="submit" value="Submit"></p>
-        </form>`;
+router.get('/logininfo', async(ctx, next) => {
+  if(ctx.session){
+    ctx.body = {
+      success:0,
+      message:'已登录',
+    }
+  }
+  else{
+    ctx.body = {
+      success:-1,
+      message:'未登录',
+    }
+  }
 });
 
 /**
@@ -105,14 +111,25 @@ router.get('/menu/', Menu.findById);
  */
 //查询评价路由
 router.get('/rating/', Rating.findById);
-
 /**
  * 数据格式
  * {
  *  restaurant_id:'',//餐馆id
  * }
  */
-router.get('/ratingcount/', Rating.ratingCount);
+//获取餐馆评分
+router.get('/rating/score/',async (ctx,next)=>{
+  let data = superagent.get('http://mainsite-restapi.ele.me/ugc/v2/restaurants/'+ctx.request.query.restaurant_id+'/ratings/scores');
+  ctx.body = data;
+});
+/**
+ * 数据格式
+ * {
+ *  restaurant_id:'',//餐馆id
+ * }
+ */
+//获取评价人数
+router.get('/rating/ratingcount/', Rating.ratingCount);
 
 
 /**
@@ -126,7 +143,6 @@ router.get('/ratingcount/', Rating.ratingCount);
  */
 //查询餐馆信息
 router.get('/restaurant/', Restaurant.findByLocation);
-
 // 天气接口
 
 /**

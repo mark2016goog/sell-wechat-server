@@ -26,8 +26,10 @@
     "bluebird": "^3.5.0",
     "ioredis": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
+    "koa-convert": "^1.2.0",
     "koa-router": "^7.1.1",
     "koa-session2": "^2.2.3",
+    "koa-static": "^3.0.0",
     "random-string": "^0.1.2",
     "superagent": "^3.5.2",
     "webpack": "^2.3.3"
