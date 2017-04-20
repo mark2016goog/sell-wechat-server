@@ -4,13 +4,15 @@ const Menu = require('../app/controllers/menu');
 const Restaurant = require('../app/controllers/restaurant');
 const Rating = require('../app/controllers/rating');
 const Address = require('../app/controllers/address');
+const Order = require('../app/controllers/order');
 const superagent = require('superagent');
 
 const router = new Router();
 
 // user路由
 router.get('/logininfo', async(ctx, next) => {
-  if(ctx.session){
+  console.log(ctx);
+  if(ctx.session && ctx.session.phonenumber){
     ctx.body = {
       success:0,
       message:'已登录',
@@ -42,6 +44,8 @@ router.post('/user/signinpassword', User.signinPassword);
  */
 //手机号登录如果没有注册自动注册
 router.post('/user/signinphonenumber', User.signinPhoneNumber);
+
+router.get('/user/userinfo',User.getUserInfo);
 
 
 // 设置密码
@@ -181,4 +185,8 @@ router.get('/search/', async function (ctx, next) {
     data: result
   };
 });
+
+
+router.post('/comfirmorder/',Order.createOrder);
+router.get('/orderlist/',Order.find);
 module.exports = router;

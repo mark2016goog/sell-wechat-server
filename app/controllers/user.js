@@ -15,8 +15,8 @@ exports.signinPassword = async(ctx) => {
     phonenumber: _user.phonenumber
   }).exec();
 
-  if (user) {
-    if (user.password == '') {
+  if (user[0]) {
+    if (user[0].password == '') {
       ctx.body = {
         success: -2,
         message: '请先设置密码在登录'
@@ -107,3 +107,24 @@ exports.setPassword = async(ctx) => {
     }
   }
 }
+
+exports.getUserInfo = async(ctx)=>{
+  if(ctx.session && ctx.session.phonenumber){
+    ctx.body = {
+      success:0,
+      message:'获取用户信息成功',
+      data:{
+        phonenumber:ctx.session.phonenumber,
+        name:ctx.session.name,
+        avatar:ctx.session.avatar
+      }
+    }
+  }
+  else{
+    ctx.body = {
+      success:-1,
+      message:'你还未登录',
+    }
+  }
+}
+

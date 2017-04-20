@@ -3,8 +3,7 @@ const AddressModel = require('../models/address');
 const UserModel = require('../models/user');
 
 exports.find = async(ctx, next) => {
-  console.log(ctx.session)
-  if (ctx.session) {
+  if (ctx.session && ctx.seesion.phonenumber) {
     const result = await UserModel.findOne({
       phonenumber: ctx.query.phonenumber
     }, {
@@ -25,7 +24,7 @@ exports.find = async(ctx, next) => {
     else{
       ctx.body ={
         success:-1,
-        message:'还没有收货地址'
+        message:'用户不存在'
       }
     }
   } else {

@@ -7,6 +7,10 @@ let UserSchema = new Schema({
     type:String,
     default:''
   },
+  avatar:{
+    type:String,
+    default:'http://xiaodiwaimai.oss-cn-shenzhen.aliyuncs.com/default_person_icon.png'
+  },
   name: String,
   phonenumber:{
     type:String,

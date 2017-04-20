@@ -5,8 +5,19 @@ const ObjectId = Schame.Types.ObjectId;
 let OrderSchame = new Schame({
   shop_name: String,
   status: Number,
-  time: Date,
-  good_list: []
+  good_list: [],
+  restaurant_id:String,
+  restaurant_image_path:String,
+  meta: {
+    createAt: {
+      type: Date,
+      default: Date.now()
+    },
+    updateAt:{
+      type:Date,
+      default:Date.now()
+    }
+  }
 });
 
 OrderSchame.pre('save', function (next) {
