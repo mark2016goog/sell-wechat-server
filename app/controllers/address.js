@@ -22,9 +22,15 @@ exports.find = async(ctx, next) => {
         data: address
       }
     }
+    else{
+      ctx.body ={
+        success:-1,
+        message:'还没有收货地址'
+      }
+    }
   } else {
     ctx.body = {
-      success: -1,
+      success: -2,
       message: '你还未登陆'
     }
   }
