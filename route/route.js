@@ -170,7 +170,21 @@ router.get('/rating/ratingcount/', Rating.ratingCount);
 //查询餐馆信息
 router.get('/restaurant/', Restaurant.findByLocation);
 // 天气接口
+router.get('/restaurant/xindian/',Restaurant.findByLocationNew);
 
+router.get('/restaurant/chaoshi/',Restaurant.findByLocationMarket);
+
+router.get('/restaurant/shuiguo/',Restaurant.findByLocationFruit);
+
+router.get('/restaurant/tianpin/',Restaurant.findByLocationSweet);
+
+router.get('/restaurant/hanbao/',Restaurant.findByLocationHamburger);
+
+router.get('/restaurant/zhunshida/',Restaurant.findByLocationPunctual);
+
+router.get('/restaurant/malatang/',Restaurant.findByLocationHotpot);
+
+router.get('/restaurant/meishi/',Restaurant.findByLocationDelicious);
 /**
  * 数据格式
  * {
