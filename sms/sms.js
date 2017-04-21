@@ -3,13 +3,13 @@
 const UCPaas = require('./ucpaas');
 exports.sendcode = async (code, phonenumber)=>{
   let ucpaas = UCPaas({
-    accountSid: 'aa65e24d3531456cf7a8d8402812665c',
-    token: '3ed1872af851316570dd691ce64cf6b8',
-    appId: 'a891fbe444ee4f5a9d1c42239d5b1593'
+    accountSid: '',
+    token: '',
+    appId: ''
   });
   return await ucpaas.sms({
     "param": code,
-    "templateId": "42568",
+    "templateId": "",
     "to": phonenumber
   });
 };
