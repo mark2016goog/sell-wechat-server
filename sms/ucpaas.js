@@ -30,7 +30,7 @@ function UCPaas(opt) {
 UCPaas.prototype.Post = async function(api, params) {
   let auth = this.auth();
   let url = `${this.host}/${this.version}/Accounts/${this.accountSid}/${api}?sig=${auth.sig}`;
-  let axios = await request({
+  let result = await axios({
     url:url,
     method:'post',
     headers: {

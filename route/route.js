@@ -49,7 +49,8 @@ router.post('/user/signinphonenumber', User.signinPhoneNumber);
 router.get('/user/userinfo',User.getUserInfo);
 
 router.post('/user/sendcode',async function(ctx){
-    let phonumber = ctx.request.body.phonumber;
+    let phonenumber = ctx.request.body.phonenumber;
+
     let code  = SMS.randomNum(6);
     const result = await SMS.sendcode(code,phonenumber);
     if(result.resp.respCode == '000000'){
