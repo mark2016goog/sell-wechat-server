@@ -3,9 +3,9 @@ const AddressModel = require('../models/address');
 const UserModel = require('../models/user');
 
 exports.find = async(ctx, next) => {
-  if (ctx.session && ctx.seesion.phonenumber) {
+  if (ctx.session && ctx.session.phonenumber) {
     const result = await UserModel.findOne({
-      phonenumber: ctx.query.phonenumber
+      phonenumber: ctx.session.phonenumber
     }, {
       address_ids: 1
     });
@@ -68,10 +68,10 @@ exports.setAddress = async(ctx, next) => {
       }
     }
     try {
-      let user_phonenumber = _address.user_phonenumber;
+      // let user_phonenumber = _address.user_phonenumber;
       let address = await AddressModel.create(new_address);
       let user = await UserModel.update({
-        phonenumber: user_phonenumber
+        phonenumber: ctx.session.phonenumber
       }, {
         $addToSet: {
           address_ids: address._id
@@ -94,11 +94,10 @@ exports.setAddress = async(ctx, next) => {
 
 exports.delete = async(ctx, next) => {
   let _id = ctx.request.body._id;
-  let user_phonenumber = ctx.request.body.user_phonenumber;
-  console.log(_id,user_phonenumber);
+  // let user_phonenumber = ctx.request.body.user_phonenumber;
   try {
     let user = await UserModel.update({
-      phonenumber: user_phonenumber
+      phonenumber: ctx.session.phonenumber
     }, {$pull: {address_ids:mongoose.Types.ObjectId(_id)}}).exec()
     if (user.ok == 1 && user.n == 1) {
       const address = await AddressModel.deleteOne({

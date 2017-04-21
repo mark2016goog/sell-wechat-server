@@ -91,7 +91,7 @@ exports.signinPhoneNumber = async function (ctx) {
 exports.setPassword = async(ctx) => {
   let hash = bcrypt.hashSync(ctx.request.body.password);
   let user = await UserModel.update({
-    phonenumber: ctx.request.body.phonenumber
+    phonenumber: ctx.session.phonenumber
   }, {
     password: hash
   }).exec();
@@ -128,3 +128,28 @@ exports.getUserInfo = async(ctx)=>{
   }
 }
 
+exports.hasPassword =async (ctx,next)=>{
+  if(ctx.session && ctx.session.phonenumber){
+    const user = await UserModel.findOne({phonenumber:ctx.session.phonenumber});
+    if(user){
+      if(user.password){
+        ctx.body = {
+          success:0,
+          message:'已设置密码'
+        }
+      }
+      else{
+        ctx.body = {
+          success:1,
+          message:'未设置密码'
+        }
+      }
+    }
+    else{
+      ctx.body = {
+        success:-1,
+        message:'用户不存在'
+      }
+    }
+  }
+}

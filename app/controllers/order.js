@@ -13,7 +13,7 @@ exports.createOrder = async(ctx, next) => {
   try {
     const order = await OrderModel.create(_order);
     let user = await UserModel.update({
-      phonenumber: ctx.request.body.user_phonenumber
+      phonenumber: ctx.session.phonenumber
     }, {
       $addToSet: {
         order_ids: order._id
@@ -40,9 +40,9 @@ exports.createOrder = async(ctx, next) => {
 }
 
 exports.find = async (ctx,next)=>{
-  if (ctx.session && ctx.phonenumber) {
+  if (ctx.session && ctx.session.phonenumber) {
     const result = await UserModel.findOne({
-      phonenumber: ctx.query.user_phonenumber
+      phonenumber: ctx.session.phonenumber
     }, {
       order_ids: 1
     });

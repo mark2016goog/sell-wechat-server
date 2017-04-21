@@ -102,6 +102,8 @@ router.post('/user/deleteaddress',Address.delete);
  *  restaurant_id:''
  * }
  */
+
+router.get('/user/haspassword',User.hasPassword);
 // 查询菜单路由
 router.get('/menu/', Menu.findById);
 
