@@ -7,6 +7,8 @@ const path = require('path')
 const convert = require('koa-convert')
 const static = require('koa-static')
 const Store = require('./Store');
+const https = require('https');
+const fs = require('fs');
 
 const DB_URL = 'mongodb://localhost/xiaodiwaimai';
 const app = new Koa();
@@ -28,5 +30,11 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
 
-app.listen(3000);
-console.log('server listening 3000 port...');
+var options = {
+    key: fs.readFileSync('./ssl/2_www.wd4219.cn.key'),  //ssl文件路径
+    cert: fs.readFileSync('./ssl/1_www.wd4219.cn_bundle.crt')  //ssl文件路径
+};
+
+https.createServer(options, app.callback()).listen(443);
+
+console.log('listen in 443 port');

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const UserModel = require('../models/user');
 const randomString = require('random-string');
-
+const moment = require('moment');
 /**
  * 密码登录处理
  * 
@@ -56,33 +56,48 @@ exports.signinPassword = async(ctx) => {
  */
 exports.signinPhoneNumber = async function (ctx) {
   let _user = ctx.request.body;
-  _user.name = randomString(8) + randomString(8);
-  let user = await UserModel.find({
-    phonenumber: _user.phonenumber
-  }).exec();
-  if (!user.length) {
-    try {
-      let res = await UserModel.create(_user);
-      ctx.session = res;
-      ctx.body = {
-        success: 0,
-        message: '注册成功！'
-      }
-    } catch (e) {
-      console.log(e);
-      ctx.body = {
-        success: -1,
-        message: '注册失败'
-      }
+  if (moment(ctx.session.createDate, 'YYYYMMDDhhmmsss').fromNow().substr(0, 1) > 3) {
+    ctx.body = {
+      success: -3,
+      message: '验证码已过期'
     }
   } else {
-    ctx.session = user[0];
-    ctx.body = {
-      success: 0,
-      message: '登录成功',
-      data: {
-        name: user[0].name,
-        phonenumber: user[0].phonenumber,
+    if (ctx.request.body.code == ctx.session.code) {
+      _user.name = randomString(8) + randomString(8);
+      let user = await UserModel.find({
+        phonenumber: _user.phonenumber
+      }).exec();
+      if (!user.length) {
+        try {
+          let res = await UserModel.create(_user);
+          ctx.session = res;
+          ctx.body = {
+            success: 0,
+            message: '注册成功！'
+          }
+        } catch (e) {
+          console.log(e);
+          ctx.body = {
+            success: -1,
+            message: '注册失败'
+          }
+        }
+      } else {
+        ctx.session = user[0];
+        ctx.body = {
+          success: 0,
+          message: '登录成功',
+          data: {
+            name: user[0].name,
+            phonenumber: user[0].phonenumber,
+          }
+        }
+      }
+    }
+    else{
+      ctx.body = {
+        success:-2,
+        message:'验证码错误'
       }
     }
   }
@@ -108,47 +123,46 @@ exports.setPassword = async(ctx) => {
   }
 }
 
-exports.getUserInfo = async(ctx)=>{
-  if(ctx.session && ctx.session.phonenumber){
+exports.getUserInfo = async(ctx) => {
+  if (ctx.session && ctx.session.phonenumber) {
     ctx.body = {
-      success:0,
-      message:'获取用户信息成功',
-      data:{
-        phonenumber:ctx.session.phonenumber,
-        name:ctx.session.name,
-        avatar:ctx.session.avatar
+      success: 0,
+      message: '获取用户信息成功',
+      data: {
+        phonenumber: ctx.session.phonenumber,
+        name: ctx.session.name,
+        avatar: ctx.session.avatar
       }
     }
-  }
-  else{
+  } else {
     ctx.body = {
-      success:-1,
-      message:'你还未登录',
+      success: -1,
+      message: '你还未登录',
     }
   }
 }
 
-exports.hasPassword =async (ctx,next)=>{
-  if(ctx.session && ctx.session.phonenumber){
-    const user = await UserModel.findOne({phonenumber:ctx.session.phonenumber});
-    if(user){
-      if(user.password){
+exports.hasPassword = async(ctx, next) => {
+  if (ctx.session && ctx.session.phonenumber) {
+    const user = await UserModel.findOne({
+      phonenumber: ctx.session.phonenumber
+    });
+    if (user) {
+      if (user.password) {
         ctx.body = {
-          success:0,
-          message:'已设置密码'
+          success: 0,
+          message: '已设置密码'
+        }
+      } else {
+        ctx.body = {
+          success: 1,
+          message: '未设置密码'
         }
       }
-      else{
-        ctx.body = {
-          success:1,
-          message:'未设置密码'
-        }
-      }
-    }
-    else{
+    } else {
       ctx.body = {
-        success:-1,
-        message:'用户不存在'
+        success: -1,
+        message: '用户不存在'
       }
     }
   }

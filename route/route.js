@@ -5,6 +5,7 @@ const Restaurant = require('../app/controllers/restaurant');
 const Rating = require('../app/controllers/rating');
 const Address = require('../app/controllers/address');
 const Order = require('../app/controllers/order');
+const SMS = require('../sms/sms');
 const superagent = require('superagent');
 
 const router = new Router();
@@ -47,7 +48,25 @@ router.post('/user/signinphonenumber', User.signinPhoneNumber);
 
 router.get('/user/userinfo',User.getUserInfo);
 
-
+router.post('/user/sendcode',async function(ctx){
+    let phonumber = ctx.request.body.phonumber;
+    let code  = SMS.randomNum(6);
+    const result = await SMS.sendcode(code,phonenumber);
+    if(result.resp.respCode == '000000'){
+      ctx.session.code = code;
+      ctx.session.createDate = result.resp.templateSMS.createDate
+      ctx.body = {
+        success:0,
+        message:'短信发送成功'
+      }
+    }
+    else{
+      ctx.body = {
+        success:-1,
+        message:'短信发送失败'
+      }
+    }
+});
 // 设置密码
 /**
  * 数据格式
