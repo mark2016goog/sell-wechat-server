@@ -291,3 +291,17 @@ exports.findByLocationDelicious = async function (ctx, next) {
   });
   ctx.body = restaurant;
 }
+exports.findByLocationKeywords = async function (ctx, next) {
+  let lng = Number.parseFloat(ctx.query.longitude);
+  let lat = Number.parseFloat(ctx.query.latitude);
+  let limit = Number.parseInt(ctx.query.limit);
+  let offset = Number.parseInt(ctx.query.offset);
+  let keyword = ctx.query.keyword
+  const restaurant = await RestaurantModel.find({
+      $text:{$search:'饭'}
+    }).then(async(res) => {
+    return res;
+    
+  });
+  ctx.body = restaurant;
+}

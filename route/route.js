@@ -185,6 +185,9 @@ router.get('/restaurant/zhunshida/',Restaurant.findByLocationPunctual);
 router.get('/restaurant/malatang/',Restaurant.findByLocationHotpot);
 
 router.get('/restaurant/meishi/',Restaurant.findByLocationDelicious);
+
+
+router.get('/restaurant/keyword',Restaurant.findByLocationKeywords);
 /**
  * 数据格式
  * {
