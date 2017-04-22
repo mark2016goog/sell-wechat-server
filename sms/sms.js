@@ -1,15 +1,15 @@
 "use strict";
-
+const config = require('../config');
 const UCPaas = require('./ucpaas');
 exports.sendcode = async (code, phonenumber)=>{
   let ucpaas = UCPaas({
-    accountSid: '',
-    token: '',
-    appId: ''
+    accountSid: config.accountId,
+    token: config.token,
+    appId: config.appId
   });
   return await ucpaas.sms({
     "param": code,
-    "templateId": "",
+    "templateId": config.templateId,
     "to": phonenumber
   });
 };

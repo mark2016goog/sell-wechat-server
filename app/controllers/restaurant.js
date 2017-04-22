@@ -229,23 +229,23 @@ exports.findByLocationHotpot = async function (ctx, next) {
   let lat = Number.parseFloat(ctx.query.latitude);
   let limit = Number.parseInt(ctx.query.limit);
   let offset = Number.parseInt(ctx.query.offset);
-  const restaurant = await RestaurantModel.aggregate([{
-      $match: {
+  const restaurant = await RestaurantModel.aggregate([
+      { "$geoNear": {
+          "near": {
+            "type": "Point",
+            "coordinates": [ lng, lat ]
+          },
+          "spherical": true,
+          "distanceField": "distance"
+      }
+    },
+    {
+      "$match": {
         $text: {
           $search: '麻 辣 烫 火锅 锅'
         }
       }
     },
-    //   { "$geoNear": {
-    //       "near": {
-    //         "type": "Point",
-    //         "coordinates": [ lng, lat ]
-    //       },
-    //       "spherical": true,
-    //       "distanceField": "distance"
-    //   }
-    // },
-
     {
       "$skip": offset
     },

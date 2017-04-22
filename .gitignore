@@ -4,3 +4,5 @@ npm-debug.log
 yarn-error.log
 .vscode
 *.map
+config/
+ssl/
