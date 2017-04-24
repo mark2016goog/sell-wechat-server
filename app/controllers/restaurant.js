@@ -73,8 +73,8 @@ exports.findByLocationMarket = async function (ctx, next) {
         "spherical": true,
         "distanceField": "distance",
         query: {
-          $text: {
-            $search: '超市 便利 商店'
+          name: {
+            $regex: '超市|便利|商店'
           }
         }
       }
@@ -106,8 +106,8 @@ exports.findByLocationFruit = async function (ctx, next) {
         "spherical": true,
         "distanceField": "distance",
         query: {
-          $text: {
-            $search: "水果 鲜果 果 奶"
+          name: {
+            $regex: "水果|鲜果|果|奶"
           }
         }
       }
@@ -139,8 +139,8 @@ exports.findByLocationSweet = async function (ctx, next) {
         "spherical": true,
         "distanceField": "distance",
         query: {
-          $text: {
-            $search: '鲜 奶 糕点 蛋 咖啡 茶'
+          name: {
+            $regex: '鲜|奶|糕点|蛋|咖啡|茶'
           }
         }
       }
@@ -172,8 +172,8 @@ exports.findByLocationHamburger = async function (ctx, next) {
         "spherical": true,
         "distanceField": "distance",
         query: {
-          $text: {
-            $search: '汉堡 粥 饺子 盖饭 鸡 烧 烤肉'
+          name: {
+            $regex: '汉堡|粥|饺子|盖饭|鸡|烧|烤肉'
           }
         }
       }
@@ -236,14 +236,12 @@ exports.findByLocationHotpot = async function (ctx, next) {
             "coordinates": [ lng, lat ]
           },
           "spherical": true,
-          "distanceField": "distance"
-      }
-    },
-    {
-      "$match": {
-        $text: {
-          $search: '麻 辣 烫 火锅 锅'
-        }
+          "distanceField": "distance",
+          query:{
+            name:{
+              $regex:'麻|辣|烫|火锅|锅'
+            }
+          }
       }
     },
     {
@@ -296,10 +294,24 @@ exports.findByLocationKeywords = async function (ctx, next) {
   let lat = Number.parseFloat(ctx.query.latitude);
   let limit = Number.parseInt(ctx.query.limit);
   let offset = Number.parseInt(ctx.query.offset);
-  let keyword = ctx.query.keyword
-  const restaurant = await RestaurantModel.find({
-      $text:{$search:'饭'}
-    }).then(async(res) => {
+  let keyword = eval("/" + ctx.query.keyword+"/"); 
+  const restaurant = await RestaurantModel.find(
+    {
+      "$geoNear": {
+        "near": {
+          "type": "Point",
+          "coordinates": [lng, lat]
+        },
+        "spherical": true,
+        "distanceField": "distance",
+        query: {
+         name: {
+            $regex: keyword
+          }
+        }
+      }
+    }
+  ).then(async(res) => {
     return res;
     
   });
