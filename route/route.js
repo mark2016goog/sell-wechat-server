@@ -78,7 +78,7 @@ router.post('/user/sendcode',async function(ctx){
  */
 router.post('/user/setpassword', User.setPassword);
 
-
+router.post('/user/logout',User.logout);
 
 //数据格式
 /*
@@ -206,7 +206,7 @@ router.get('/weather/', async function (ctx, next) {
     var data = {
       temperature: res.body.temperature,
       description: res.body.description,
-      image_path: 'http://fuss10.elemecdn.com/' + path + '?imageMogr/format/webp/thumbnail/!69x69r/gravity/Center/crop/69x69/'
+      image_path: 'https://fuss10.elemecdn.com/' + path + '?imageMogr/format/webp/thumbnail/!69x69r/gravity/Center/crop/69x69/'
     }
     return data;
   });

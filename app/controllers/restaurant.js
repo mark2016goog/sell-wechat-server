@@ -15,6 +15,8 @@ exports.findByLocation = async function (ctx, next) {
         },
         "spherical": true,
         "distanceField": "distance",
+        "maxDistance":20,
+        "distanceMultiplier":0.001
       }
     },
     {

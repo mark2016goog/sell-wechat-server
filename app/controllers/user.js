@@ -167,3 +167,18 @@ exports.hasPassword = async(ctx, next) => {
     }
   }
 }
+exports.logout =  async (ctx,next)=>{
+  if(ctx.session && ctx.session.phonenumber){
+    ctx.session ={};
+    ctx.body = {
+      success:0,
+      message:'已退出登录',
+    }
+  }
+  else{
+    ctx.body = {
+      success:0,
+      message:'您还未登录'
+    }
+  }
+}
